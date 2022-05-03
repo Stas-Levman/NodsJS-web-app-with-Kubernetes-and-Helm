@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-file-configmap
+  namespace: {{ .Values.namespace }}
+data: 
+  PORT: "8080"
+  HOST: "0.0.0.0"
+  PGHOST: db-service
+  PGUSERNAME: postgres
+  PGDATABASE: postgres
+  PGPORT: "5432"
+  HOST_URL: http://{{ .Values.ip_address }}:80
+  NODE_ENV: development
+  OKTA_ORG_URL: https://dev-77800982.okta.com
+  OKTA_CLIENT_ID: 0oa4meqiqur1teoM25d7

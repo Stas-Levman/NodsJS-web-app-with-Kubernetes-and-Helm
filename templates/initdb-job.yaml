@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: initdb-job
+  namespace: {{ .Values.namespace }}
+  annotations:
+    "helm.sh/hook": post-install, post-upgrade
+spec:
+  ttlSecondsAfterFinished: 30
+  template:
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+      - name: acr-secret
+      initContainers:
+      - name: check-db-ready
+        image: postgres:alpine
+        command: ['sh', '-c', 
+          'until pg_isready -h db-service -p 5432; 
+          do echo waiting for database; sleep 2; done;']
+
+      containers:
+      - name: initdb-job
+        image: {{ .Values.webApp.spec.image }}:{{ .Values.webApp.spec.imagetag }}
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh"]
+        args:
+          - -c
+          - >-
+              npm run initdb
+        envFrom:
+          - secretRef: 
+              name: env-file-secrets
+          - configMapRef: 
+              name: env-file-configmap
+
+      
+
+          

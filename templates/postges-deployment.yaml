@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: {{ .Values.namespace }}
+  annotations:
+    "helm.sh/hook": pre-install
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+      env: {{ .Values.namespace }}
+  serviceName: "db-service"
+  replicas: {{ .Values.postgres.replicas }}
+  template:
+    metadata:
+      labels:
+        app: postgres
+        env: {{ .Values.namespace }}
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:alpine
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: env-file-secrets
+                key: PGPASSWORD
+          - name: PGATA 
+            value: /data/pgdata
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: database-disk
+          mountPath: /data
+        resources:
+          requests:
+            cpu: 200m
+            memory: 50Mi
+          limits:
+            cpu: 300m
+            memory: 75Mi
+        readinessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 5
+          periodSeconds: 15
+        livenessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 15
+          periodSeconds: 30
+
+  volumeClaimTemplates:
+  - metadata:
+      name: database-disk
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: "150Mi"

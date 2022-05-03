@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app-deployment
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.webApp.spec.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: web-app
+      env: {{ .Values.namespace }}
+  template:
+    metadata:
+      labels:
+        app: web-app
+        env: {{ .Values.namespace }}
+    spec:
+      imagePullSecrets:
+      - name: acr-secret
+      containers:
+      - name: nodejs-app
+        image: {{ .Values.webApp.spec.image }}:{{ .Values.webApp.spec.imagetag }}
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - secretRef: 
+              name: env-file-secrets
+          - configMapRef: 
+              name: env-file-configmap
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 200m
+            memory: 50Mi
+          limits:
+            cpu: 300m
+            memory: 75Mi
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 15
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          
+              
+
+          
