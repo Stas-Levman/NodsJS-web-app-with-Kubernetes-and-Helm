@@ -1,5 +1,4 @@
 
 # Ignore value files and helm packages
-/packages
 *value*
 *.tgz
