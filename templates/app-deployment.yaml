@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: web-app-deployment
   namespace: {{ .Values.namespace }}
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: {{ .Values.webApp.spec.replicas }}
   strategy:
