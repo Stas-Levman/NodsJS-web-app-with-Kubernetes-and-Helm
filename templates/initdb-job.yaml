@@ -4,7 +4,7 @@ metadata:
   name: initdb-job
   namespace: {{ .Values.namespace }}
   annotations:
-    "helm.sh/hook": post-install
+    "helm.sh/hook": post-install, post-upgrade
 spec:
   ttlSecondsAfterFinished: 30
   template:
