@@ -13,4 +13,4 @@ data:
   HOST_URL: http://{{ .Values.ip_address }}:80
   NODE_ENV: development
   OKTA_ORG_URL: https://dev-77800982.okta.com
-  OKTA_CLIENT_ID: 0oa4meqiqur1teoM25d7
+  OKTA_CLIENT_ID: 0oa4fpsb2tjFxCKm35d7
