@@ -10,8 +10,8 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 1
+      maxUnavailable: 2
+      maxSurge: 2
   selector:
     matchLabels:
       app: web-app
@@ -22,8 +22,6 @@ spec:
         app: web-app
         env: {{ .Values.namespace }}
     spec:
-      # imagePullSecrets:
-      # - name: acr-secret
       containers:
       - name: nodejs-app
         image: {{ .Values.webApp.spec.image }}:{{ .Values.webApp.spec.imagetag }}
@@ -43,10 +41,14 @@ spec:
             cpu: 300m
             memory: 75Mi
         readinessProbe:
-          tcpSocket:
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 15
+          exec:
+            command:
+            - cd
+            - node_modules
+          # tcpSocket:
+          #   port: 8080
+          # initialDelaySeconds: 5
+          # periodSeconds: 15
         livenessProbe:
           tcpSocket:
             port: 8080
