@@ -22,8 +22,8 @@ spec:
         app: web-app
         env: {{ .Values.namespace }}
     spec:
-      imagePullSecrets:
-      - name: acr-secret
+      # imagePullSecrets:
+      # - name: acr-secret
       containers:
       - name: nodejs-app
         image: {{ .Values.webApp.spec.image }}:{{ .Values.webApp.spec.imagetag }}
