@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: web-app-deployment
   namespace: {{ .Values.namespace }}
-  annotations:
-    reloader.stakater.com/auto: "true"
 spec:
   replicas: {{ .Values.webApp.spec.replicas }}
   strategy:
@@ -45,13 +43,13 @@ spec:
             command:
             - ls
             - node_modules
-          # tcpSocket:
-          #   port: 8080
           initialDelaySeconds: 5
           periodSeconds: 15
         livenessProbe:
-          tcpSocket:
-            port: 8080
+          exec:
+            command:
+            - ls
+            - node_modules
           initialDelaySeconds: 15
           periodSeconds: 30
           
