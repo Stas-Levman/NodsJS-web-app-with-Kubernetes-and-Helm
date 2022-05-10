@@ -27,7 +27,7 @@ A `--set` argument can be passed to set the ingressClass it creates as the defau
 
 ### Notes and reflections:
 The main issue i faced when trying to deploy a database is the initialization of the database,<br>
-to ensure the attempt to initialize the database was done only when the DB container is ready, I created a job resource of the web-app the runs the command "npm run initdb",<br>
+to ensure the attempt to initialize the database was done only when the DB container is ready, I created a job resource of the web-app that runs the command "npm run initdb",<br>
 To further ensure it runs only when the DB is ready, it uses helm hooks: `"helm.sh/hook": post-install, post-upgrade` to only run post completed install/upgrade of the other resources.<br>
 The last step to ensure it, was a postgres `initContainer` that ensures via command `pg_isready` towards our database service that it is up and running,<br>
 the `npm run initdb` container will not run before the `initContainer` completes it's job successfully.
